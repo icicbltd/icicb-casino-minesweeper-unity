@@ -14,8 +14,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public static APIForm apiform;
-    public static Globalinitial _global;
+    
     public Sprite collectimg;
     public Sprite startimg;
     public Button StartOrCollectbtn;
@@ -38,11 +37,21 @@ public class GameManager : MonoBehaviour
     private GameObject grassch;
     private GameObject grass;
     public TMP_Text alertText;
+
+    public static APIForm apiform;
+    public static Globalinitial _global;
     [DllImport("__Internal")]
     private static extern void GameReady(string msg);
     BetPlayer _player;
-
-    // Start is called before the first frame update
+    public void RequestToken(string data)
+    {
+        JSONNode usersInfo = JSON.Parse(data);
+        _player.token = usersInfo["token"];
+        _player.username = usersInfo["userName"];
+        float i_balance = float.Parse(usersInfo["amount"]);
+        totalValue = i_balance;
+        totalPriceText.text = totalValue.ToString("F2");
+    }
     void Start()
     {
         _player = new BetPlayer();
@@ -55,15 +64,7 @@ public class GameManager : MonoBehaviour
         betValue = 10f;
         inputPriceText.text = betValue.ToString("F2");
     }
-    public void RequestToken(string data)
-    {
-        JSONNode usersInfo = JSON.Parse(data);
-        _player.token = usersInfo["token"];
-        _player.username = usersInfo["userName"];
-        float i_balance = float.Parse(usersInfo["amount"]);
-        totalValue = i_balance;
-        totalPriceText.text = totalValue.ToString("F2");
-    }
+    
     // Update is called once per frame
     void Update()
     {
